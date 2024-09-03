@@ -1,3 +1,4 @@
+.PHONY: all module clean
 module:
 	cd ./module && make
 	cd ..
