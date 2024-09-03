@@ -1,0 +1,5 @@
+./module/build/
+./module/*.mod
+./module/*.o
+./module/*.symvers
+./module/*.order
