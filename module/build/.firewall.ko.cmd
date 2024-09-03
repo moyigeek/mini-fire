@@ -1,0 +1,1 @@
+cmd_/home/moyi/ws/src/firewall.ko := ld -r -m elf_x86_64 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/moyi/ws/src/firewall.ko /home/moyi/ws/src/firewall.o /home/moyi/ws/src/firewall.mod.o;  true
