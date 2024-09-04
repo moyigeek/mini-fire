@@ -1,8 +1,8 @@
-cmd_/home/moyi/ws/module/main.o := gcc -Wp,-MMD,/home/moyi/ws/module/.main.o.d -nostdinc -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -I./ubuntu/include -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu89 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m64 -falign-jumps=1 -falign-loops=1 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -DCONFIG_X86_X32_ABI -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -mindirect-branch-cs-prefix -mfunction-return=thunk-extern -fno-jump-tables -mharden-sls=all -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -Wframe-larger-than=1024 -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-stack-clash-protection -g -gdwarf-5 -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -falign-functions=16 -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wno-stringop-truncation -Wno-zero-length-bounds -Wno-array-bounds -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -fsanitize=bounds -fsanitize=shift -fsanitize=bool -fsanitize=enum  -DMODULE  -DKBUILD_BASENAME='"main"' -DKBUILD_MODNAME='"firewall"' -D__KBUILD_MODNAME=kmod_firewall -c -o /home/moyi/ws/module/main.o /home/moyi/ws/module/main.c
+cmd_/home/moyi/ws/module/rule_filter.o := gcc -Wp,-MMD,/home/moyi/ws/module/.rule_filter.o.d -nostdinc -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -I./ubuntu/include -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu89 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m64 -falign-jumps=1 -falign-loops=1 -mno-80387 -mno-fp-ret-in-387 -mpreferred-stack-boundary=3 -mskip-rax-setup -mtune=generic -mno-red-zone -mcmodel=kernel -DCONFIG_X86_X32_ABI -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -mindirect-branch-cs-prefix -mfunction-return=thunk-extern -fno-jump-tables -mharden-sls=all -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -Wframe-larger-than=1024 -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-stack-clash-protection -g -gdwarf-5 -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -falign-functions=16 -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wno-stringop-truncation -Wno-zero-length-bounds -Wno-array-bounds -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -fsanitize=bounds -fsanitize=shift -fsanitize=bool -fsanitize=enum  -DMODULE  -DKBUILD_BASENAME='"rule_filter"' -DKBUILD_MODNAME='"firewall"' -D__KBUILD_MODNAME=kmod_firewall -c -o /home/moyi/ws/module/rule_filter.o /home/moyi/ws/module/rule_filter.c
 
-source_/home/moyi/ws/module/main.o := /home/moyi/ws/module/main.c
+source_/home/moyi/ws/module/rule_filter.o := /home/moyi/ws/module/rule_filter.c
 
-deps_/home/moyi/ws/module/main.o := \
+deps_/home/moyi/ws/module/rule_filter.o := \
   include/linux/compiler-version.h \
     $(wildcard include/config/CC_VERSION_TEXT) \
   include/linux/kconfig.h \
@@ -668,14 +668,9 @@ deps_/home/moyi/ws/module/main.o := \
     $(wildcard include/config/MODULES_USE_ELF_REL) \
     $(wildcard include/config/MODULES_USE_ELF_RELA) \
   arch/x86/include/asm/orc_types.h \
-  include/linux/netfilter.h \
-    $(wildcard include/config/HAVE_EFFICIENT_UNALIGNED_ACCESS) \
-    $(wildcard include/config/NETFILTER) \
-    $(wildcard include/config/NETFILTER_FAMILY_ARP) \
-    $(wildcard include/config/NETFILTER_FAMILY_BRIDGE) \
-    $(wildcard include/config/NF_NAT) \
-    $(wildcard include/config/NF_CONNTRACK) \
+  include/linux/ip.h \
   include/linux/skbuff.h \
+    $(wildcard include/config/NF_CONNTRACK) \
     $(wildcard include/config/BRIDGE_NETFILTER) \
     $(wildcard include/config/NET_TC_SKB_EXT) \
     $(wildcard include/config/NET_SOCK_MSG) \
@@ -691,6 +686,7 @@ deps_/home/moyi/ws/module/main.o := \
     $(wildcard include/config/NETWORK_SECMARK) \
     $(wildcard include/config/DEBUG_NET) \
     $(wildcard include/config/PAGE_POOL) \
+    $(wildcard include/config/HAVE_EFFICIENT_UNALIGNED_ACCESS) \
     $(wildcard include/config/NETWORK_PHY_TIMESTAMPING) \
     $(wildcard include/config/XFRM) \
     $(wildcard include/config/MPTCP) \
@@ -1144,12 +1140,20 @@ deps_/home/moyi/ws/module/main.o := \
   include/linux/ptr_ring.h \
   include/linux/netfilter/nf_conntrack_common.h \
   include/uapi/linux/netfilter/nf_conntrack_common.h \
-  include/uapi/linux/if.h \
-  include/uapi/linux/hdlc/ioctl.h \
-  include/linux/in.h \
-  include/uapi/linux/in.h \
-  include/linux/netfilter_defs.h \
-  include/uapi/linux/netfilter.h \
+  include/uapi/linux/ip.h \
+  include/linux/tcp.h \
+    $(wildcard include/config/SMC) \
+    $(wildcard include/config/BPF) \
+    $(wildcard include/config/TCP_MD5SIG) \
+  include/linux/win_minmax.h \
+  include/net/sock.h \
+    $(wildcard include/config/IPV6) \
+    $(wildcard include/config/SOCK_RX_QUEUE_MAPPING) \
+    $(wildcard include/config/SOCK_VALIDATE_XMIT) \
+    $(wildcard include/config/RPS) \
+    $(wildcard include/config/INET) \
+    $(wildcard include/config/SOCK_CGROUP_DATA) \
+  include/linux/list_nulls.h \
   include/linux/netdevice.h \
     $(wildcard include/config/DCB) \
     $(wildcard include/config/HYPERV_NET) \
@@ -1160,7 +1164,6 @@ deps_/home/moyi/ws/module/main.o := \
     $(wildcard include/config/NET_IPGRE) \
     $(wildcard include/config/IPV6_SIT) \
     $(wildcard include/config/IPV6_TUNNEL) \
-    $(wildcard include/config/RPS) \
     $(wildcard include/config/NETPOLL) \
     $(wildcard include/config/XDP_SOCKETS) \
     $(wildcard include/config/BQL) \
@@ -1171,7 +1174,6 @@ deps_/home/moyi/ws/module/main.o := \
     $(wildcard include/config/LIBFCOE) \
     $(wildcard include/config/WIRELESS_EXT) \
     $(wildcard include/config/NET_L3_MASTER_DEV) \
-    $(wildcard include/config/IPV6) \
     $(wildcard include/config/VLAN_8021Q) \
     $(wildcard include/config/NET_DSA) \
     $(wildcard include/config/TIPC) \
@@ -1196,11 +1198,11 @@ deps_/home/moyi/ws/module/main.o := \
     $(wildcard include/config/NF_FLOW_TABLE) \
     $(wildcard include/config/IEEE802154_6LOWPAN) \
     $(wildcard include/config/IP_SCTP) \
+    $(wildcard include/config/NETFILTER) \
     $(wildcard include/config/WEXT_CORE) \
     $(wildcard include/config/MPLS) \
     $(wildcard include/config/CAN) \
     $(wildcard include/config/CRYPTO_USER) \
-    $(wildcard include/config/SMC) \
     $(wildcard include/config/NET_NS) \
   include/net/netns/core.h \
   include/net/netns/mib.h \
@@ -1233,14 +1235,19 @@ deps_/home/moyi/ws/module/main.o := \
   include/net/netns/ieee802154_6lowpan.h \
   include/net/netns/sctp.h \
   include/net/netns/netfilter.h \
+    $(wildcard include/config/NETFILTER_FAMILY_ARP) \
+    $(wildcard include/config/NETFILTER_FAMILY_BRIDGE) \
     $(wildcard include/config/NF_DEFRAG_IPV4) \
+  include/linux/netfilter_defs.h \
+  include/uapi/linux/netfilter.h \
+  include/linux/in.h \
+  include/uapi/linux/in.h \
   include/net/netns/conntrack.h \
     $(wildcard include/config/NF_CT_PROTO_DCCP) \
     $(wildcard include/config/NF_CT_PROTO_SCTP) \
     $(wildcard include/config/NF_CT_PROTO_GRE) \
     $(wildcard include/config/NF_CONNTRACK_EVENTS) \
     $(wildcard include/config/NF_CONNTRACK_LABELS) \
-  include/linux/list_nulls.h \
   include/linux/netfilter/nf_conntrack_tcp.h \
   include/uapi/linux/netfilter/nf_conntrack_tcp.h \
   include/linux/netfilter/nf_conntrack_dccp.h \
@@ -1263,7 +1270,6 @@ deps_/home/moyi/ws/module/main.o := \
     $(wildcard include/config/EFFICIENT_UNALIGNED_ACCESS) \
     $(wildcard include/config/CGROUP_NET_CLASSID) \
     $(wildcard include/config/BPF_KPROBE_OVERRIDE) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
   include/uapi/linux/bpf_common.h \
   include/net/netns/mctp.h \
   include/linux/ns_common.h \
@@ -1297,7 +1303,6 @@ deps_/home/moyi/ws/module/main.o := \
   include/linux/bpf-cgroup.h \
   include/linux/bpf.h \
     $(wildcard include/config/BPF_JIT_ALWAYS_ON) \
-    $(wildcard include/config/INET) \
   include/linux/file.h \
   include/linux/kallsyms.h \
     $(wildcard include/config/KALLSYMS_ALL) \
@@ -1336,6 +1341,8 @@ deps_/home/moyi/ws/module/main.o := \
   include/linux/kernel_read_file.h \
   include/uapi/linux/netlink.h \
   include/uapi/linux/netdevice.h \
+  include/uapi/linux/if.h \
+  include/uapi/linux/hdlc/ioctl.h \
   include/linux/if_ether.h \
   include/linux/if_link.h \
   include/uapi/linux/if_link.h \
@@ -1343,13 +1350,119 @@ deps_/home/moyi/ws/module/main.o := \
   include/uapi/linux/pkt_cls.h \
   include/uapi/linux/pkt_sched.h \
   include/linux/hashtable.h \
+  include/linux/page_counter.h \
+  include/linux/memcontrol.h \
+    $(wildcard include/config/MEMCG_SWAP) \
+  include/linux/vmpressure.h \
+  include/linux/eventfd.h \
+  include/linux/writeback.h \
+  include/linux/flex_proportions.h \
+  include/linux/backing-dev-defs.h \
+    $(wildcard include/config/DEBUG_FS) \
+  include/linux/blk_types.h \
+    $(wildcard include/config/FAIL_MAKE_REQUEST) \
+    $(wildcard include/config/BLK_CGROUP_IOCOST) \
+    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
+    $(wildcard include/config/BLK_DEV_INTEGRITY) \
+  include/linux/blk-cgroup.h \
+    $(wildcard include/config/BLK_CGROUP_FC_APPID) \
+  include/linux/blkdev.h \
+    $(wildcard include/config/BLK_RQ_ALLOC_TIME) \
+    $(wildcard include/config/BLK_WBT) \
+    $(wildcard include/config/BLK_DEV_ZONED) \
+    $(wildcard include/config/BLK_DEV_THROTTLING) \
+    $(wildcard include/config/BLK_DEBUG_FS) \
+  include/uapi/linux/major.h \
+  include/linux/genhd.h \
+    $(wildcard include/config/BLOCK_HOLDER_DEPRECATED) \
+    $(wildcard include/config/CDROM) \
+  include/linux/mempool.h \
+  include/linux/bio.h \
+  include/uapi/linux/blkzoned.h \
+  include/linux/sbitmap.h \
+  include/linux/elevator.h \
+  include/linux/blk-mq.h \
+    $(wildcard include/config/FAIL_IO_TIMEOUT) \
+  include/linux/filter.h \
+    $(wildcard include/config/HAVE_EBPF_JIT) \
+  include/linux/compat.h \
+    $(wildcard include/config/ARCH_HAS_SYSCALL_WRAPPER) \
+    $(wildcard include/config/COMPAT_OLD_SIGACTION) \
+    $(wildcard include/config/ODD_RT_SIGACTION) \
+  include/uapi/linux/aio_abi.h \
+  arch/x86/include/asm/compat.h \
+  include/linux/sched/task_stack.h \
+    $(wildcard include/config/DEBUG_STACK_USAGE) \
+  include/uapi/linux/magic.h \
+  arch/x86/include/asm/user32.h \
+  include/asm-generic/compat.h \
+    $(wildcard include/config/COMPAT_FOR_U64_ALIGNMENT) \
+  arch/x86/include/asm/syscall_wrapper.h \
+  include/linux/set_memory.h \
+    $(wildcard include/config/ARCH_HAS_SET_MEMORY) \
+    $(wildcard include/config/ARCH_HAS_SET_DIRECT_MAP) \
+  arch/x86/include/asm/set_memory.h \
+  include/asm-generic/set_memory.h \
+  include/linux/if_vlan.h \
+  include/linux/etherdevice.h \
+  include/linux/crc32.h \
+  include/linux/bitrev.h \
+    $(wildcard include/config/HAVE_ARCH_BITREVERSE) \
+  arch/x86/include/generated/asm/unaligned.h \
+  include/asm-generic/unaligned.h \
+  include/linux/unaligned/packed_struct.h \
+  include/linux/rtnetlink.h \
+    $(wildcard include/config/NET_INGRESS) \
+    $(wildcard include/config/NET_EGRESS) \
+  include/uapi/linux/rtnetlink.h \
+  include/uapi/linux/if_addr.h \
+  include/uapi/linux/if_vlan.h \
+  include/crypto/sha1.h \
+  include/net/sch_generic.h \
+  include/uapi/linux/pkt_cls.h \
+  include/net/gen_stats.h \
+  include/uapi/linux/gen_stats.h \
+  include/net/rtnetlink.h \
+  include/net/netlink.h \
+  include/net/flow_offload.h \
+  include/uapi/linux/filter.h \
+  include/linux/rculist_nulls.h \
+  include/linux/poll.h \
+  include/uapi/linux/poll.h \
+  arch/x86/include/generated/uapi/asm/poll.h \
+  include/uapi/asm-generic/poll.h \
+  include/uapi/linux/eventpoll.h \
+  include/linux/indirect_call_wrapper.h \
+  include/net/dst.h \
+  include/net/neighbour.h \
+  include/net/tcp_states.h \
+  include/uapi/linux/net_tstamp.h \
+  include/net/l3mdev.h \
+  include/net/fib_rules.h \
+  include/uapi/linux/fib_rules.h \
+  include/net/fib_notifier.h \
+  include/net/inet_connection_sock.h \
+  include/net/inet_sock.h \
+  include/linux/jhash.h \
+  include/net/request_sock.h \
+  include/net/netns/hash.h \
+  include/net/inet_timewait_sock.h \
+  include/net/timewait_sock.h \
+  include/uapi/linux/tcp.h \
+  include/linux/udp.h \
+  include/uapi/linux/udp.h \
+  include/linux/ctype.h \
+  include/linux/icmp.h \
+  include/uapi/linux/icmp.h \
+  include/uapi/linux/errqueue.h \
+  /home/moyi/ws/module/rule_filter.h \
+  include/linux/netfilter.h \
+    $(wildcard include/config/NF_NAT) \
   include/linux/netfilter/nf_conntrack_zones_common.h \
   include/uapi/linux/netfilter/nf_conntrack_tuple_common.h \
   include/linux/netfilter_ipv4.h \
   include/uapi/linux/netfilter_ipv4.h \
-  /home/moyi/ws/module/rule_filter.h \
-  /home/moyi/ws/module/driver.h \
 
-/home/moyi/ws/module/main.o: $(deps_/home/moyi/ws/module/main.o)
+/home/moyi/ws/module/rule_filter.o: $(deps_/home/moyi/ws/module/rule_filter.o)
 
-$(deps_/home/moyi/ws/module/main.o):
+$(deps_/home/moyi/ws/module/rule_filter.o):
