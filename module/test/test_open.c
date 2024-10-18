@@ -16,7 +16,7 @@ void write_command(int fd, char command) {
     printf("Wrote command 0x%x to the device\n", command);
 }
 
-int main() {
+int main(){
     int fd;
     char read_buf[100];
     ssize_t bytes_read;
@@ -30,7 +30,6 @@ int main() {
 
     // 写入命令 0x1
     write_command(fd, 0x1);
-
     // 读取数据
     bytes_read = read(fd, read_buf, sizeof(read_buf) - 1);
     if (bytes_read < 0) {
@@ -41,33 +40,5 @@ int main() {
     read_buf[bytes_read] = '\0'; // 确保字符串以 null 结尾
     printf("Read %zd bytes from the device: %s\n", bytes_read, read_buf);
 
-    // 写入命令 0x2
-    write_command(fd, 0x2);
-
-    // 读取数据
-    bytes_read = read(fd, read_buf, sizeof(read_buf) - 1);
-    if (bytes_read < 0) {
-        perror("Failed to read from the device");
-        close(fd);
-        return EXIT_FAILURE;
-    }
-    read_buf[bytes_read] = '\0'; // 确保字符串以 null 结尾
-    printf("Read %zd bytes from the device: %s\n", bytes_read, read_buf);
-
-    // 写入命令 0x3
-    write_command(fd, 0x3);
-
-    // 读取数据
-    bytes_read = read(fd, read_buf, sizeof(read_buf) - 1);
-    if (bytes_read < 0) {
-        perror("Failed to read from the device");
-        close(fd);
-        return EXIT_FAILURE;
-    }
-    read_buf[bytes_read] = '\0'; // 确保字符串以 null 结尾
-    printf("Read %zd bytes from the device: %s\n", bytes_read, read_buf);
-
-    // 关闭设备
-    close(fd);
-    return EXIT_SUCCESS;
+    return 0;
 }

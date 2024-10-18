@@ -934,6 +934,21 @@ deps_/home/moyi/ws/module/driver.o := \
   include/linux/device/driver.h \
   arch/x86/include/asm/device.h \
   include/linux/pm_wakeup.h \
+  include/linux/slab.h \
+    $(wildcard include/config/DEBUG_SLAB) \
+    $(wildcard include/config/FAILSLAB) \
+    $(wildcard include/config/HAVE_HARDENED_USERCOPY_ALLOCATOR) \
+    $(wildcard include/config/SLAB) \
+    $(wildcard include/config/SLUB) \
+    $(wildcard include/config/SLOB) \
+    $(wildcard include/config/CC_IS_GCC) \
+    $(wildcard include/config/CLANG_VERSION) \
+  include/linux/percpu-refcount.h \
+  include/linux/kasan.h \
+    $(wildcard include/config/KASAN_STACK) \
+    $(wildcard include/config/KASAN_VMALLOC) \
+  include/linux/jhash.h \
+  include/linux/unaligned/packed_struct.h \
   /home/moyi/ws/module/rule_filter.h \
   include/linux/netfilter.h \
     $(wildcard include/config/HAVE_EFFICIENT_UNALIGNED_ACCESS) \
@@ -992,7 +1007,6 @@ deps_/home/moyi/ws/module/driver.o := \
     $(wildcard include/config/HUGETLBFS) \
     $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
   include/linux/mmap_lock.h \
-  include/linux/percpu-refcount.h \
   include/linux/page_ext.h \
   include/linux/stacktrace.h \
     $(wildcard include/config/STACKTRACE) \
@@ -1028,9 +1042,6 @@ deps_/home/moyi/ws/module/driver.o := \
   arch/x86/include/uapi/asm/vsyscall.h \
   include/asm-generic/fixmap.h \
   arch/x86/include/asm/pgtable-invert.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
   include/linux/huge_mm.h \
   include/linux/sched/coredump.h \
     $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
@@ -1081,15 +1092,6 @@ deps_/home/moyi/ws/module/driver.o := \
   include/linux/siphash.h \
   arch/x86/include/asm/archrandom.h \
   include/linux/sockptr.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/HAVE_HARDENED_USERCOPY_ALLOCATOR) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-    $(wildcard include/config/CC_IS_GCC) \
-    $(wildcard include/config/CLANG_VERSION) \
   include/uapi/linux/net.h \
   include/linux/textsearch.h \
   include/net/checksum.h \
@@ -1349,6 +1351,7 @@ deps_/home/moyi/ws/module/driver.o := \
   include/linux/netfilter_ipv4.h \
   include/uapi/linux/netfilter_ipv4.h \
   /home/moyi/ws/module/driver.h \
+  /home/moyi/ws/module/stateful_check.h \
 
 /home/moyi/ws/module/driver.o: $(deps_/home/moyi/ws/module/driver.o)
 

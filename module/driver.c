@@ -2,28 +2,57 @@
 #include <linux/fs.h>
 #include <linux/device.h>
 #include <linux/uaccess.h>
+#include <linux/slab.h>
+#include <linux/jhash.h>
 #include "rule_filter.h"
 #include "driver.h"
+#include "stateful_check.h"
 #define DEVICE_NAME "firewall_ctrl"
 #define CLASS_NAME "firewall"
 
 static int major_number;
 static struct class* firewall_class = NULL;
 static struct device* firewall_device = NULL;
+static char *buffer;
+static size_t buffer_size;
+static size_t buffer_offset;
+
+extern struct hlist_head connection_table[1 << 16]; // 从其他文件中导入连接表
+extern void print_connection_table(void); // 从其他文件中导入打印函数
 
 static int firewall_dev_open(struct inode *inodep, struct file *filep) {
     printk(KERN_INFO "Firewall device opened\n");
     return 0;
 }
 
-static ssize_t firewall_dev_read(struct file *filep, char *buffer, size_t len, loff_t *offset) {
-    printk(KERN_INFO "Reading from firewall device\n");
-    return 0;
+static ssize_t firewall_dev_read(struct file *filep, char *user_buffer, size_t len, loff_t *offset) {
+    ssize_t ret;
+
+    if (buffer_offset >= buffer_size) {
+        return 0;
+    }
+
+    if (len > buffer_size - buffer_offset) {
+        len = buffer_size - buffer_offset;
+    }
+
+    ret = copy_to_user(user_buffer, buffer + buffer_offset, len);
+    if (ret) {
+        return -EFAULT;
+    }
+
+    buffer_offset += len;
+    return len;
 }
 
-static ssize_t firewall_dev_write(struct file *filep, const char *buffer, size_t len, loff_t *offset) {
+static ssize_t firewall_dev_write(struct file *filep, const char *user_buffer, size_t len, loff_t *offset) {
     char command;
-    if (copy_from_user(&command, buffer, 1)) {
+
+    if (len != 1) {
+        return -EINVAL;
+    }
+
+    if (copy_from_user(&command, user_buffer, 1)) {
         return -EFAULT;
     }
 
@@ -64,6 +93,11 @@ static ssize_t firewall_dev_write(struct file *filep, const char *buffer, size_t
                 return -EFAULT;
             }
             printk(KERN_INFO "Firewall rules reloaded\n");
+            break;
+        case 0x4:
+            printk(KERN_INFO "Received command 0x4\n");
+            print_connection_table();
+            buffer_offset=0;
             break;
         default:
             printk(KERN_INFO "Unknown command\n");
@@ -118,4 +152,5 @@ void unregister_firewall_device(void) {
     class_unregister(firewall_class);
     class_destroy(firewall_class);
     unregister_chrdev(major_number, DEVICE_NAME);
+    kfree(buffer);
 }

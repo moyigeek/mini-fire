@@ -1455,6 +1455,7 @@ deps_/home/moyi/ws/module/rule_filter.o := \
   include/linux/icmp.h \
   include/uapi/linux/icmp.h \
   include/uapi/linux/errqueue.h \
+  include/linux/inet.h \
   /home/moyi/ws/module/rule_filter.h \
   include/linux/netfilter.h \
     $(wildcard include/config/NF_NAT) \
@@ -1462,6 +1463,7 @@ deps_/home/moyi/ws/module/rule_filter.o := \
   include/uapi/linux/netfilter/nf_conntrack_tuple_common.h \
   include/linux/netfilter_ipv4.h \
   include/uapi/linux/netfilter_ipv4.h \
+  /home/moyi/ws/module/stateful_check.h \
 
 /home/moyi/ws/module/rule_filter.o: $(deps_/home/moyi/ws/module/rule_filter.o)
 

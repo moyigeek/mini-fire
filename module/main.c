@@ -3,7 +3,7 @@
 #include <linux/netfilter_ipv4.h>
 #include "rule_filter.h"
 #include "driver.h" // 包含 driver.h
-
+#include "stateful_check.h" // 包含 stateful_check.h
 
 static int __init firewall_init(void) {
     printk(KERN_INFO "Loading firewall module\n");
@@ -38,6 +38,16 @@ static int __init firewall_init(void) {
         unregister_firewall_device(); // 注销字符设备
         return -1;
     }
+
+    // 初始化状态检测功能
+    if (stateful_firewall_init() != 0) {
+        printk(KERN_ALERT "Failed to initialize stateful firewall\n");
+        nf_unregister_net_hook(&init_net, &firewall_in_hook); // 注销入站钩子
+        nf_unregister_net_hook(&init_net, &firewall_out_hook); // 注销出站钩子
+        unregister_firewall_device(); // 注销字符设备
+        return -1;
+    }
+
     filter_status = 1; // 开启过滤器
     return 0;
 }
@@ -53,6 +63,10 @@ static void __exit firewall_exit(void) {
     nf_unregister_net_hook(&init_net, &firewall_in_hook);
     nf_unregister_net_hook(&init_net, &firewall_out_hook);
     filter_status = 0; // 关闭过滤器
+
+    // 清理状态检测功能
+    stateful_firewall_exit();
+
     // 注销字符设备
     unregister_firewall_device();
 
@@ -63,5 +77,5 @@ module_init(firewall_init);
 module_exit(firewall_exit);
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("moyihust");
+MODULE_AUTHOR("Your Name");
 MODULE_DESCRIPTION("Firewall Module");
