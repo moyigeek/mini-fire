@@ -34,6 +34,7 @@ __used __section("__versions") = {
 	{ 0xeb233a45, "__kmalloc" },
 	{ 0x754d539c, "strlen" },
 	{ 0x1b6314fd, "in_aton" },
+	{ 0xfff5afc, "time64_to_tm" },
 	{ 0x41273767, "device_destroy" },
 	{ 0xb302ead0, "__register_chrdev" },
 	{ 0x4176d998, "filp_close" },
@@ -43,6 +44,7 @@ __used __section("__versions") = {
 	{ 0xe2d5255a, "strcmp" },
 	{ 0x5b8239ca, "__x86_return_thunk" },
 	{ 0x25327573, "kernel_read" },
+	{ 0x9ec6ca96, "ktime_get_real_ts64" },
 	{ 0x58b96629, "class_unregister" },
 	{ 0x1b2f621, "device_create" },
 	{ 0xc38c83b8, "mod_timer" },
@@ -64,10 +66,11 @@ __used __section("__versions") = {
 	{ 0x656e4a6e, "snprintf" },
 	{ 0x13c49cc2, "_copy_from_user" },
 	{ 0x1683011b, "__class_create" },
+	{ 0xaa0c318b, "vscnprintf" },
 	{ 0xd6729abe, "filp_open" },
 };
 
 MODULE_INFO(depends, "");
 
 
-MODULE_INFO(srcversion, "F78D703D473579067736542");
+MODULE_INFO(srcversion, "FDEE67803D1477A593BD57D");

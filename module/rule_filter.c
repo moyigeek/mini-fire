@@ -55,112 +55,50 @@ static int parse_rule(char *line, firewall_rule_t *rule)
 
     printk(KERN_INFO "Parsing line: %s\n", line); // Debug print
 
-    // 解析源IP地址
+    // Parse source IP address
     token = strsep(&line, ",");
-    if (!token || *token == '\0')
-    {
-        rule->src_ip = 0;
-    }
-    else
-    {
-        rule->src_ip = in_aton(token);
-        if (rule->src_ip == 0 && strcmp(token, "0.0.0.0") != 0)
-        {
-            printk(KERN_ALERT "Failed to parse src_ip\n"); // Debug print
-            return -1;
+    rule->src_ip = token && *token ? in_aton(token) : 0;
+
+    // Parse destination IP address
+    token = strsep(&line, ",");
+    rule->dst_ip = token && *token ? in_aton(token) : 0;
+
+    // Parse source port
+    token = strsep(&line, ",");
+    rule->src_port = token && *token ? (uint16_t)kstrtouint(token, 0, &temp) ? 0 : temp : 0;
+
+    // Parse destination port
+    token = strsep(&line, ",");
+    rule->dst_port = token && *token ? (uint16_t)kstrtouint(token, 0, &temp) ? 0 : temp : 0;
+
+    // Parse protocol
+    token = strsep(&line, ",");
+    rule->proto = token && *token ? (uint8_t)kstrtouint(token, 0, &temp) ? 0 : temp : 0;
+
+    // Parse flow direction
+    token = strsep(&line, ",");
+    rule->flow_direction = token && *token ? kstrtoint(token, 0, &rule->flow_direction) ? 0 : rule->flow_direction : 0;
+
+    // Parse action
+    token = strsep(&line, ",");
+    if (token && *token) {
+        if (strcmp(token, "accept") == 0) {
+            rule->action = ACTION_ACCEPT;
+        } else if (strcmp(token, "drop") == 0) {
+            rule->action = ACTION_DROP;
+        } else {
+            return -1; // Invalid action
         }
-    }
-
-    // 解析目的IP地址
-    token = strsep(&line, ",");
-    if (!token || *token == '\0')
-    {
-        rule->dst_ip = 0;
-    }
-    else
-    {
-        rule->dst_ip = in_aton(token);
-        if (rule->dst_ip == 0 && strcmp(token, "0.0.0.0") != 0)
-        {
-            printk(KERN_ALERT "Failed to parse dst_ip\n"); // Debug print
-            return -1;
-        }
-    }
-
-    // 解析源端口
-    token = strsep(&line, ",");
-    if (!token || *token == '\0')
-    {
-        rule->src_port = 0;
-    }
-    else if (kstrtouint(token, 0, &temp))
-    {
-        printk(KERN_ALERT "Failed to parse src_port\n"); // Debug print
-        return -1;
-    }
-    else
-    {
-        rule->src_port = (uint16_t)temp;
-    }
-
-    // 解析目的端口
-    token = strsep(&line, ",");
-    if (!token || *token == '\0')
-    {
-        rule->dst_port = 0;
-    }
-    else if (kstrtouint(token, 0, &temp))
-    {
-        printk(KERN_ALERT "Failed to parse dst_port\n"); // Debug print
-        return -1;
-    }
-    else
-    {
-        rule->dst_port = (uint16_t)temp;
-    }
-
-    // 解析协议
-    token = strsep(&line, ",");
-    if (!token || *token == '\0')
-    {
-        rule->proto = 0;
-    }
-    else if (kstrtouint(token, 0, &temp))
-    {
-        printk(KERN_ALERT "Failed to parse proto\n"); // Debug print
-        return -1;
-    }
-    else
-    {
-        rule->proto = (uint8_t)temp;
-    }
-
-    // 解析流向
-    token = strsep(&line, ",");
-    if (!token || *token == '\0')
-    {
-        rule->flow_direction = 0;
-    }
-    else if (kstrtoint(token, 0, &rule->flow_direction))
-    {
-        printk(KERN_ALERT "Failed to parse flow_direction\n"); // Debug print
-        return -1;
-    }
-
-    // 解析动作
-    token = strsep(&line, ",");
-    if (!token || *token == '\0')
-    {
+    } else {
         rule->action = 0;
     }
-    else if (kstrtoint(token, 0, &rule->action))
-    {
-        printk(KERN_ALERT "Failed to parse action\n"); // Debug print
-        return -1;
-    }
 
-    printk(KERN_INFO "Parsed rule: src_ip=%pI4, dst_ip=%pI4, src_port=%u, dst_port=%u, proto=%u, direction=%d, action=%d\n",
-           &rule->src_ip, &rule->dst_ip, rule->src_port, rule->dst_port, rule->proto, rule->flow_direction, rule->action); // Debug print
+    // Parse log
+    token = strsep(&line, ",");
+    rule->log = token && *token ? kstrtoint(token, 0, &rule->log) ? 0 : rule->log : 0;
+
+    printk(KERN_INFO "Parsed rule: src_ip=%pI4, dst_ip=%pI4, src_port=%u, dst_port=%u, proto=%u, direction=%d, action=%d, log=%d\n",
+           &rule->src_ip, &rule->dst_ip, rule->src_port, rule->dst_port, rule->proto, rule->flow_direction, rule->action, rule->log); // Debug print
 
     return 0;
 }
@@ -222,7 +160,6 @@ static int load_rules(void)
     filp_close(file, NULL);
     return 0;
 }
-
 static int apply_rule(struct sk_buff *skb, int direction)
 {
     struct iphdr *iph = ip_hdr(skb);
@@ -232,7 +169,6 @@ static int apply_rule(struct sk_buff *skb, int direction)
     uint16_t src_port = 0, dst_port = 0;
     uint8_t proto = iph->protocol;
     char src_ip_str[16], dst_ip_str[16];
-
 
     snprintf(src_ip_str, 16, "%pI4", &src_ip);
     snprintf(dst_ip_str, 16, "%pI4", &dst_ip);
@@ -245,22 +181,16 @@ static int apply_rule(struct sk_buff *skb, int direction)
 
     list_for_each_entry(rule, &rule_list, list)
     {
-        // printk(KERN_INFO "Checking rule: src_ip=%pI4, dst_ip=%pI4, src_port=%u, dst_port=%u, proto=%u, direction=%d\n",
-        //        &rule->src_ip, &rule->dst_ip, rule->src_port, rule->dst_port, rule->proto, rule->flow_direction);
         if ((rule->src_ip == 0 || rule->src_ip == src_ip) &&
             (rule->dst_ip == 0 || rule->dst_ip == dst_ip) &&
             (rule->src_port == 0 || rule->src_port == src_port) &&
             (rule->dst_port == 0 || rule->dst_port == dst_port) &&
             rule->proto == proto && rule->flow_direction == direction)
         {
-            if (proto == IPPROTO_ICMP)
+            if (rule->log)
             {
-                struct icmphdr *icmph = icmp_hdr(skb);
-                if (icmph->type == ICMP_ECHO)
-                {
-                    printk(KERN_INFO "ICMP Echo Request from %s to %s\n",
-                           src_ip_str, dst_ip_str);
-                }
+                printk(KERN_INFO "Logging packet from %s to %s\n",
+                       src_ip_str, dst_ip_str);
             }
             switch (rule->action)
             {
@@ -268,10 +198,6 @@ static int apply_rule(struct sk_buff *skb, int direction)
                 return stateful_firewall_check(skb, direction);
             case ACTION_DROP:
                 return NF_DROP;
-            case ACTION_LOG:
-                printk(KERN_INFO "Packet from %s to %s received\n",
-                       src_ip_str, dst_ip_str);
-                return stateful_firewall_check(skb, direction);
             }
         }
     }

@@ -14,6 +14,7 @@ typedef struct firewall_rule {
     uint8_t proto;
     int flow_direction;
     int action;
+    int log; // New field for logging
     struct list_head list;
 } firewall_rule_t;
 // 钩子操作结构体，用于处理入站流量
@@ -44,6 +45,5 @@ unsigned int rule_filter_apply_outbound(void *priv, struct sk_buff *skb, const s
 
 #define ACTION_ACCEPT 0
 #define ACTION_DROP 1
-#define ACTION_LOG 2
 
 #endif /* RULE_FILTER_H */
