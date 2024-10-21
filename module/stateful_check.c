@@ -9,7 +9,6 @@
 #include <linux/jhash.h>
 #include <linux/fs.h>
 #include <linux/uaccess.h>
-#include <linux/slab.h>
 #include "log.h"
 #define TIMEOUT_INTERVAL (5 * HZ) // 超时时间间隔，5秒
 
@@ -140,14 +139,12 @@ void timeout_check(struct timer_list *t) {
 }
 
 // 打印连接表的函数
-
 void print_connection_table(void) {
     struct file *file;
     int bkt;
     connection_t *conn;
     size_t offset = 0;
     loff_t pos = 0;
-    mm_segment_t old_fs;
 
     // 计算缓冲区大小
     buffer_size = 0;

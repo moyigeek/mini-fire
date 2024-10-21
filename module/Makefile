@@ -2,7 +2,7 @@
 obj-m += firewall.o 
 PWD := $(CURDIR)
 BUILD_DIR := $(PWD)/build
-firewall-objs := main.o rule_filter.o driver.o stateful_check.o log.o
+firewall-objs := main.o rule_filter.o driver.o stateful_check.o log.o nat.o
 TEST_DIR := $(PWD)/test
 TEST_SOURCES := $(wildcard $(TEST_DIR)/*.c)
 TEST_PROGRAMS := $(patsubst $(TEST_DIR)/%.c,%,$(TEST_SOURCES))

@@ -1,1 +1,1 @@
-cmd_/home/moyi/ws/module/firewall.o := ld -m elf_x86_64 -z noexecstack   -r -o /home/moyi/ws/module/firewall.o /home/moyi/ws/module/main.o /home/moyi/ws/module/rule_filter.o /home/moyi/ws/module/driver.o /home/moyi/ws/module/stateful_check.o /home/moyi/ws/module/log.o
+cmd_/home/moyi/ws/module/firewall.o := ld -m elf_x86_64 -z noexecstack   -r -o /home/moyi/ws/module/firewall.o /home/moyi/ws/module/main.o /home/moyi/ws/module/rule_filter.o /home/moyi/ws/module/driver.o /home/moyi/ws/module/stateful_check.o /home/moyi/ws/module/log.o /home/moyi/ws/module/nat.o
