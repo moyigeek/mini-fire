@@ -1347,12 +1347,16 @@ deps_/home/moyi/ws/module/main.o := \
   include/uapi/linux/netfilter/nf_conntrack_tuple_common.h \
   include/linux/netfilter_ipv4.h \
   include/uapi/linux/netfilter_ipv4.h \
+  include/linux/proc_fs.h \
+    $(wildcard include/config/PROC_PID_ARCH_STATUS) \
+  include/linux/jhash.h \
+  include/linux/unaligned/packed_struct.h \
   /home/moyi/ws/module/rule_filter.h \
   /home/moyi/ws/module/driver.h \
   /home/moyi/ws/module/stateful_check.h \
-  include/linux/jhash.h \
-  include/linux/unaligned/packed_struct.h \
   /home/moyi/ws/module/nat.h \
+  /home/moyi/ws/module/log.h \
+  include/linux/inet.h \
 
 /home/moyi/ws/module/main.o: $(deps_/home/moyi/ws/module/main.o)
 

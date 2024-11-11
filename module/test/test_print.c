@@ -31,7 +31,7 @@ int main() {
     }
 
     // 写入命令 0x4
-    write_command(fd, 0x4);
+    write_command(fd, '3');
 
     // 读取数据
     printf("Reading data from the device:\n");

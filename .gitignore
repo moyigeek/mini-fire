@@ -3,3 +3,5 @@
 ./module/*.o
 ./module/*.symvers
 ./module/*.order
+.o
+test_*

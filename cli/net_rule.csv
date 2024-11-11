@@ -1,0 +1,2 @@
+src_ip,dst_ip,src_port,dst_port,protocol,flow_direction,action,log
+0,0,0,0,0,0,0,1

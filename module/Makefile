@@ -10,18 +10,22 @@ TEST_PROGRAMS := $(patsubst $(TEST_DIR)/%.c,%,$(TEST_SOURCES))
 all:
 	$(MAKE) -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
 	mkdir -p $(BUILD_DIR)
-	mv *.o *.ko *.mod.c .*.cmd $(BUILD_DIR)
+	mv *.o *.ko *.mod.c .*.cmd Module.symvers modules.order $(BUILD_DIR)
+	echo "Module built successfully"
 
 clean:
 	$(MAKE) -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
 	rm -rf $(BUILD_DIR)
 	rm -f $(TEST_PROGRAMS)
+	echo "Module cleaned successfully"
 
 install:
 	sudo insmod $(BUILD_DIR)/firewall.ko
+	echo "Module installed successfully"
 
 uninstall:
 	sudo rmmod firewall
+	echo "Module uninstalled successfully"
 
 test: $(TEST_PROGRAMS)
 	for prog in $(TEST_PROGRAMS); do \

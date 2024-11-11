@@ -18,3 +18,13 @@ Kernel-level stateful inspection firewall
         - [ ]UDP
         - [ ]ICMP
     - [x]rule filter
+
+
+## How to use
+1. prepare
+    - linux kernel source
+    - linux kernel headers
+    - gcc
+    - make
+    - rustc
+2. build

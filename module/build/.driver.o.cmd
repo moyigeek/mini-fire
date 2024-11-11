@@ -1352,6 +1352,7 @@ deps_/home/moyi/ws/module/driver.o := \
   include/uapi/linux/netfilter_ipv4.h \
   /home/moyi/ws/module/driver.h \
   /home/moyi/ws/module/stateful_check.h \
+  /home/moyi/ws/module/log.h \
 
 /home/moyi/ws/module/driver.o: $(deps_/home/moyi/ws/module/driver.o)
 

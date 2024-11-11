@@ -11,6 +11,7 @@
 #include <linux/inet.h> // Include for in_aton
 #include "rule_filter.h"
 #include "stateful_check.h"
+#include "log.h" // Include for logging
 
 #define NIPQUAD(addr)                \
     ((unsigned char *)&addr)[3],     \
@@ -20,8 +21,7 @@
 
 LIST_HEAD(rule_list);
 
-char rule_file_path[256]="/home/moyi/ws/module/net_rule.csv";
-
+char rule_file_path[256] = "/home/moyi/ws/module/net_rule.csv";
 
 static int read_line(char *buf, loff_t *offset, struct file *file)
 {
@@ -44,7 +44,7 @@ static int read_line(char *buf, loff_t *offset, struct file *file)
     }
     buf[i] = '\0';
 
-    printk(KERN_INFO "Read line: %s\n", buf); // Debug print
+    log_message(LOG_INFO, "Read line: %s", buf); // Debug print
     return 0;
 }
 
@@ -53,7 +53,7 @@ static int parse_rule(char *line, firewall_rule_t *rule)
     char *token;
     unsigned int temp;
 
-    printk(KERN_INFO "Parsing line: %s\n", line); // Debug print
+    log_message(LOG_INFO, "Parsing line: %s", line); // Debug print
 
     // Parse source IP address
     token = strsep(&line, ",");
@@ -81,15 +81,23 @@ static int parse_rule(char *line, firewall_rule_t *rule)
 
     // Parse action
     token = strsep(&line, ",");
-    if (token && *token) {
-        if (strcmp(token, "accept") == 0) {
+    if (token && *token)
+    {
+        if (strcmp(token, "accept") == 0)
+        {
             rule->action = ACTION_ACCEPT;
-        } else if (strcmp(token, "drop") == 0) {
+        }
+        else if (strcmp(token, "drop") == 0)
+        {
             rule->action = ACTION_DROP;
-        } else {
+        }
+        else
+        {
             return -1; // Invalid action
         }
-    } else {
+    }
+    else
+    {
         rule->action = 0;
     }
 
@@ -97,8 +105,8 @@ static int parse_rule(char *line, firewall_rule_t *rule)
     token = strsep(&line, ",");
     rule->log = token && *token ? kstrtoint(token, 0, &rule->log) ? 0 : rule->log : 0;
 
-    printk(KERN_INFO "Parsed rule: src_ip=%pI4, dst_ip=%pI4, src_port=%u, dst_port=%u, proto=%u, direction=%d, action=%d, log=%d\n",
-           &rule->src_ip, &rule->dst_ip, rule->src_port, rule->dst_port, rule->proto, rule->flow_direction, rule->action, rule->log); // Debug print
+    log_message(LOG_INFO, "Parsed rule: src_ip=%pI4, dst_ip=%pI4, src_port=%u, dst_port=%u, proto=%u, direction=%d, action=%d, log=%d",
+                &rule->src_ip, &rule->dst_ip, rule->src_port, rule->dst_port, rule->proto, rule->flow_direction, rule->action, rule->log); // Debug print
 
     return 0;
 }
@@ -115,7 +123,7 @@ static int load_rules(void)
     file = filp_open(rule_file_path, O_RDONLY, 0);
     if (IS_ERR(file))
     {
-        printk(KERN_ALERT "Failed to open rule file\n");
+        log_message(LOG_WARN, "Failed to open rule file");
         return PTR_ERR(file);
     }
 
@@ -129,7 +137,7 @@ static int load_rules(void)
     // Skip the header line
     if (read_line(buf, &pos, file) != 0)
     {
-        printk(KERN_ALERT "Failed to read header line\n");
+        log_message(LOG_WARN, "Failed to read header line");
         kfree(buf);
         filp_close(file, NULL);
         return -EIO;
@@ -137,7 +145,7 @@ static int load_rules(void)
 
     while (read_line(buf, &pos, file) == 0)
     {
-        printk(KERN_INFO "Processing line: %s\n", buf); // Debug print
+        log_message(LOG_INFO, "Processing line: %s", buf); // Debug print
         rule = kmalloc(sizeof(firewall_rule_t), GFP_KERNEL);
         if (!rule)
         {
@@ -155,11 +163,12 @@ static int load_rules(void)
         list_add(&rule->list, &rule_list);
         i++;
     }
-    printk(KERN_INFO "Loaded %d rules\n", i);
+    log_message(LOG_INFO, "Loaded %d rules", i);
     kfree(buf);
     filp_close(file, NULL);
     return 0;
 }
+
 static int apply_rule(struct sk_buff *skb, int direction)
 {
     struct iphdr *iph = ip_hdr(skb);
@@ -189,8 +198,7 @@ static int apply_rule(struct sk_buff *skb, int direction)
         {
             if (rule->log)
             {
-                printk(KERN_INFO "Logging packet from %s to %s\n",
-                       src_ip_str, dst_ip_str);
+                log_message(LOG_INFO, "Logging packet from %s to %s", src_ip_str, dst_ip_str);
             }
             switch (rule->action)
             {
@@ -203,6 +211,7 @@ static int apply_rule(struct sk_buff *skb, int direction)
     }
     return stateful_firewall_check(skb, direction);
 }
+
 unsigned int rule_filter_apply_inbound(void *priv, struct sk_buff *skb, const struct nf_hook_state *state)
 {
     return apply_rule(skb, FLOW_INBOUND);

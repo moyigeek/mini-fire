@@ -9,6 +9,7 @@
 #include <linux/jhash.h>
 #include <linux/fs.h>
 #include <linux/uaccess.h>
+#include <linux/timekeeping.h>
 #include "log.h"
 #define TIMEOUT_INTERVAL (5 * HZ) // 超时时间间隔，5秒
 
@@ -16,6 +17,16 @@ struct hlist_head connection_table[1 << 16]; // 定义连接表
 static struct timer_list timeout_timer;
 static char *buffer;
 static size_t buffer_size;
+
+// 获取当前系统时间的字符串表示（仅时间部分）
+static void get_current_time_str(char *buffer, size_t buffer_size) {
+    struct timespec64 ts;
+    struct tm tm;
+    ktime_get_real_ts64(&ts);
+    time64_to_tm(ts.tv_sec, 0, &tm);
+    snprintf(buffer, buffer_size, "%02d:%02d:%02d",
+             tm.tm_hour, tm.tm_min, tm.tm_sec);
+}
 
 // TCP状态检测函数
 static int check_tcp_state(struct sk_buff *skb, connection_t *conn) {
@@ -94,7 +105,7 @@ int stateful_firewall_check(struct sk_buff *skb, int direction) {
     // 如果没有找到现有连接，则添加新连接
     conn = kmalloc(sizeof(connection_t), GFP_KERNEL);
     if (!conn) {
-        printk(KERN_ERR "Failed to allocate memory for connection\n");
+        log_message(LOG_ERROR, "Failed to allocate memory for connection");
         return NF_DROP;
     }
     conn->src_ip = src_ip;
@@ -105,8 +116,8 @@ int stateful_firewall_check(struct sk_buff *skb, int direction) {
     conn->state = 0;
     conn->last_seen = jiffies;
     hash_add(connection_table, &conn->list, hash_key);
-    printk(KERN_INFO "New connection added: src_ip=%pI4, dst_ip=%pI4, src_port=%u, dst_port=%u, proto=%u\n",
-           &conn->src_ip, &conn->dst_ip, conn->src_port, conn->dst_port, conn->proto);
+    log_message(LOG_INFO, "New connection added: src_ip=%pI4, dst_ip=%pI4, src_port=%u, dst_port=%u, proto=%u",
+                &conn->src_ip, &conn->dst_ip, conn->src_port, conn->dst_port, conn->proto);
 
     switch (proto) {
         case IPPROTO_TCP:
@@ -145,32 +156,35 @@ void print_connection_table(void) {
     connection_t *conn;
     size_t offset = 0;
     loff_t pos = 0;
+    char time_str[32];
 
     // 计算缓冲区大小
-    buffer_size = 0;
+    buffer_size = snprintf(NULL, 0, "src_ip,dst_ip,src_port,dst_port,proto,state,last_seen\n");
     hash_for_each(connection_table, bkt, conn, list) {
-        buffer_size += snprintf(NULL, 0, "src_ip=%pI4, dst_ip=%pI4, src_port=%u, dst_port=%u, proto=%u, state=%d, last_seen=%lu\n",
+        buffer_size += snprintf(NULL, 0, "%pI4,%pI4,%u,%u,%u,%d,%lu\n",
                                 &conn->src_ip, &conn->dst_ip, conn->src_port, conn->dst_port, conn->proto, conn->state, conn->last_seen);
     }
-    printk(KERN_INFO "Buffer size: %zu\n", buffer_size);
+    // log_message(LOG_INFO, "Buffer size: %zu", buffer_size);
 
     // 分配缓冲区
     buffer = kmalloc(buffer_size + 1, GFP_KERNEL);
     if (!buffer) {
-        printk(KERN_ERR "Failed to allocate memory for buffer\n");
+        log_message(LOG_ERROR, "Failed to allocate memory for buffer");
         return;
     }
 
     // 填充缓冲区
+    offset += snprintf(buffer + offset, buffer_size - offset + 1, "src_ip,dst_ip,src_port,dst_port,proto,state,last_seen\n");
     hash_for_each(connection_table, bkt, conn, list) {
-        offset += snprintf(buffer + offset, buffer_size - offset + 1, "src_ip=%pI4, dst_ip=%pI4, src_port=%u, dst_port=%u, proto=%u, state=%d, last_seen=%lu\n",
-                           &conn->src_ip, &conn->dst_ip, conn->src_port, conn->dst_port, conn->proto, conn->state, conn->last_seen);
+        get_current_time_str(time_str, sizeof(time_str));
+        offset += snprintf(buffer + offset, buffer_size - offset + 1, "%pI4,%pI4,%u,%u,%u,%d,%s\n",
+                           &conn->src_ip, &conn->dst_ip, conn->src_port, conn->dst_port, conn->proto, conn->state, time_str);
     }
 
     // 打开文件
-    file = filp_open("/tmp/connection_table", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    file = filp_open("/tmp/connection_table.csv", O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (IS_ERR(file)) {
-        printk(KERN_ERR "Failed to open /tmp/connection_table\n");
+        log_message(LOG_ERROR, "Failed to open /tmp/connection_table.csv");
         kfree(buffer);
         return;
     }
@@ -187,7 +201,7 @@ void print_connection_table(void) {
 
 // 状态检测初始化函数
 int stateful_firewall_init(void) {
-    printk(KERN_INFO "Initializing Stateful Firewall\n");
+    log_message(LOG_INFO, "Initializing Stateful Firewall");
 
     // 初始化连接表
     hash_init(connection_table);
@@ -205,7 +219,7 @@ void stateful_firewall_exit(void) {
     connection_t *conn;
     struct hlist_node *tmp;
 
-    printk(KERN_INFO "Exiting Stateful Firewall\n");
+    log_message(LOG_INFO, "Exiting Stateful Firewall");
 
     // 删除定时器
     del_timer_sync(&timeout_timer);
@@ -222,7 +236,7 @@ void stateful_firewall_exit(void) {
         buffer = NULL;
     }
 
-    printk(KERN_INFO "Stateful Firewall exited successfully\n");
+    log_message(LOG_INFO, "Stateful Firewall exited successfully");
 }
 
 const char* get_protocol_type(uint8_t proto) {

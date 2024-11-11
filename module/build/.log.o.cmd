@@ -1102,6 +1102,7 @@ deps_/home/moyi/ws/module/log.o := \
   include/uapi/linux/ip.h \
   include/linux/in.h \
   include/uapi/linux/in.h \
+  include/linux/namei.h \
 
 /home/moyi/ws/module/log.o: $(deps_/home/moyi/ws/module/log.o)
 

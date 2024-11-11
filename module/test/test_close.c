@@ -31,7 +31,7 @@ int main()
     }
 
     // 写入命令 0x2
-    write_command(fd, 0x2);
+    write_command(fd, '1');
 
     // 读取数据
     bytes_read = read(fd, read_buf, sizeof(read_buf) - 1);

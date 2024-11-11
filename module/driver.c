@@ -7,6 +7,8 @@
 #include "rule_filter.h"
 #include "driver.h"
 #include "stateful_check.h"
+#include "log.h"
+
 #define DEVICE_NAME "firewall_ctrl"
 #define CLASS_NAME "firewall"
 
@@ -57,8 +59,8 @@ static ssize_t firewall_dev_write(struct file *filep, const char *user_buffer, s
     }
 
     switch (command) {
-        case 0x1:
-            printk(KERN_INFO "Received command 0x1\n");
+        case '0':
+            printk(KERN_INFO "Received command on\n");
             if (filter_status == 0) {
                 // 注册钩子
                 firewall_in_hook.hook = rule_filter_apply_inbound;
@@ -76,8 +78,8 @@ static ssize_t firewall_dev_write(struct file *filep, const char *user_buffer, s
                 printk(KERN_INFO "Firewall hooks registered\n");
             }
             break;
-        case 0x2:
-            printk(KERN_INFO "Received command 0x2\n");
+        case '1':
+            printk(KERN_INFO "Received command turn off\n");
             if (filter_status == 1) {
                 // 注销钩子
                 nf_unregister_net_hook(&init_net, &firewall_in_hook);
@@ -86,16 +88,16 @@ static ssize_t firewall_dev_write(struct file *filep, const char *user_buffer, s
                 printk(KERN_INFO "Firewall hooks unregistered\n");
             }
             break;
-        case 0x3:
-            printk(KERN_INFO "Received command 0x3\n");
+        case '2':
+            printk(KERN_INFO "Received command reload\n");
             if (rule_filter_load_rules() != 0) {
                 printk(KERN_ALERT "Failed to reload rules\n");
                 return -EFAULT;
             }
             printk(KERN_INFO "Firewall rules reloaded\n");
             break;
-        case 0x4:
-            printk(KERN_INFO "Received command 0x4\n");
+        case '3':
+            printk(KERN_INFO "Received command printf\n");
             print_connection_table();
             buffer_offset=0;
             break;

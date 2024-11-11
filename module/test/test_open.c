@@ -29,7 +29,7 @@ int main(){
     }
 
     // 写入命令 0x1
-    write_command(fd, 0x1);
+    write_command(fd, '0');
     // 读取数据
     bytes_read = read(fd, read_buf, sizeof(read_buf) - 1);
     if (bytes_read < 0) {

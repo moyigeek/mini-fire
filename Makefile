@@ -1,7 +1,7 @@
 .PHONY: all module clean
+
 module:
-	cd ./module && make
-	cd ..
+    $(MAKE) -C module
+
 clean:
-	cd ./module && make clean
-	cd ..
+    $(MAKE) -C module clean

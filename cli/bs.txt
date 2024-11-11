@@ -1,0 +1,1 @@
+git@atomgit.com:moyihut/RustContest.git
