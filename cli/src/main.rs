@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::time::{Duration, Instant};
 use std::io::Write;
 
-const NET_RULE_PATH: &str = "net_rule.csv";
+const NET_RULE_PATH: &str = "/home/moyi/ws/module/net_rule.csv";
 const FIREWALL_PATH: &str = "/dev/firewall_ctrl";
 const LOG_PATH: &str = "/proc/fw_log";
 const CONNECTION_TABLE_PATH: &str = "/proc/connection_table";
@@ -51,10 +51,13 @@ impl Default for MyApp {
     fn default() -> Self {
         let log_content = fs::read_to_string(LOG_PATH).unwrap_or_default();
         let rules = read_rules_from_csv(NET_RULE_PATH).unwrap_or_default();
-        let connections = read_connections_from_csv(CONNECTION_TABLE_PATH).unwrap_or_default();
-        if connections.is_empty() {
+        if rules.is_empty() {
             println!("Empty");
         }
+        let connections = read_connections_from_csv(CONNECTION_TABLE_PATH).unwrap_or_default();
+        // if connections.is_empty() {
+        //     println!("Empty");
+        // }
         Self {
             current_tab: Tab::Firewall,
             log_content,
@@ -205,8 +208,10 @@ fn read_rules_from_csv(path: &str) -> Result<Vec<Rule>, csv::Error> {
     let mut rdr = csv::Reader::from_path(path)?;
     let mut rules = Vec::new();
     for result in rdr.deserialize() {
-        let rule: Rule = result?;
-        rules.push(rule);
+        match result {
+            Ok(rule) => rules.push(rule),
+            Err(e) => eprintln!("Failed to deserialize rule: {}", e),
+        }
     }
     Ok(rules)
 }

@@ -1,3 +1,7 @@
 .PHONY: run
 run:
-	sudo -E DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) ./target/debug/cli
+	xhost +SI:localuser:root
+	sudo DISPLAY=:0 ./target/debug/cli
+
+build:
+	cargo build
