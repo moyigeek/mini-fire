@@ -158,7 +158,7 @@ void log_message(uint8_t level, const char *fmt, ...) {
 }
 
 static int __init firewall_init(void) {
-    start_log();
+    // start_log();
     log_message(LOG_INFO, "Loading firewall module");
 
     // 创建 /proc/fw_log 文件
@@ -289,7 +289,7 @@ static void __exit firewall_exit(void) {
     remove_proc_entry(PROC_CONN_FILE_NAME, NULL);
 
     log_message(LOG_INFO, "Module exiting");
-    stop_log();
+    // stop_log();
 }
 
 module_init(firewall_init);

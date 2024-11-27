@@ -20,6 +20,7 @@
         ((unsigned char *)&addr)[0]
 
 LIST_HEAD(rule_list);
+int default_action = ACTION_ACCEPT;
 
 char rule_file_path[256] = "/home/moyi/ws/module/net_rule.csv";
 
@@ -54,6 +55,7 @@ static int parse_rule(char *line, firewall_rule_t *rule)
     unsigned int temp;
 
     log_message(LOG_INFO, "Parsing line: %s", line); // Debug print
+    printk(KERN_INFO "Parsing line: %s\n", line);    // Debug print
 
     // Parse source IP address
     token = strsep(&line, ",");
@@ -83,15 +85,7 @@ static int parse_rule(char *line, firewall_rule_t *rule)
     token = strsep(&line, ",");
     if (token && *token)
     {
-        if (strcmp(token, "accept") == 0)
-        {
-            rule->action = ACTION_ACCEPT;
-        }
-        else if (strcmp(token, "drop") == 0)
-        {
-            rule->action = ACTION_DROP;
-        }
-        else
+        if (kstrtoint(token, 0, &rule->action))
         {
             return -1; // Invalid action
         }
@@ -107,6 +101,8 @@ static int parse_rule(char *line, firewall_rule_t *rule)
 
     log_message(LOG_INFO, "Parsed rule: src_ip=%pI4, dst_ip=%pI4, src_port=%u, dst_port=%u, proto=%u, direction=%d, action=%d, log=%d",
                 &rule->src_ip, &rule->dst_ip, rule->src_port, rule->dst_port, rule->proto, rule->flow_direction, rule->action, rule->log); // Debug print
+    printk(KERN_INFO "Parsed rule: src_ip=%pI4, dst_ip=%pI4, src_port=%u, dst_port=%u, proto=%u, direction=%d, action=%d, log=%d\n",
+           &rule->src_ip, &rule->dst_ip, rule->src_port, rule->dst_port, rule->proto, rule->flow_direction, rule->action, rule->log); // Debug print
 
     return 0;
 }
@@ -146,9 +142,11 @@ static int load_rules(void)
     while (read_line(buf, &pos, file) == 0)
     {
         log_message(LOG_INFO, "Processing line: %s", buf); // Debug print
+        printk(KERN_INFO "Processing line: %s\n", buf);    // Debug print
         rule = kmalloc(sizeof(firewall_rule_t), GFP_KERNEL);
         if (!rule)
         {
+            kfree(buf);
             filp_close(file, NULL);
             return -ENOMEM;
         }
@@ -164,6 +162,7 @@ static int load_rules(void)
         i++;
     }
     log_message(LOG_INFO, "Loaded %d rules", i);
+    printk(KERN_INFO "Loaded %d rules\n", i);
     kfree(buf);
     filp_close(file, NULL);
     return 0;
@@ -194,22 +193,40 @@ static int apply_rule(struct sk_buff *skb, int direction)
             (rule->dst_ip == 0 || rule->dst_ip == dst_ip) &&
             (rule->src_port == 0 || rule->src_port == src_port) &&
             (rule->dst_port == 0 || rule->dst_port == dst_port) &&
-            rule->proto == proto && rule->flow_direction == direction)
+            (rule->proto == proto||rule->proto==0) && rule->flow_direction == direction)
         {
             if (rule->log)
             {
                 log_message(LOG_INFO, "Logging packet from %s to %s", src_ip_str, dst_ip_str);
+                // printk(KERN_INFO "Logging packet from %s to %s\n", src_ip_str, dst_ip_str);
             }
             switch (rule->action)
             {
             case ACTION_ACCEPT:
+                // log_message(LOG_INFO, "Accepting packet from %s to %s", src_ip_str, dst_ip_str);
+                // printk(KERN_INFO "Accepting packet from %s to %s\n", src_ip_str, dst_ip_str);
                 return stateful_firewall_check(skb, direction);
             case ACTION_DROP:
+                log_message(LOG_WARN, "Dropping packet from %s to %s", src_ip_str, dst_ip_str);
+                // printk(KERN_INFO "Dropping packet from %s to %s\n", src_ip_str, dst_ip_str);
                 return NF_DROP;
             }
         }
     }
-    return stateful_firewall_check(skb, direction);
+    // 默认动作处理
+    switch (default_action)
+    {
+    // case ACTION_ACCEPT:
+    //     log_message(LOG_INFO, "Default action: Accepting packet from %s to %s", src_ip_str, dst_ip_str);
+    //     printk(KERN_INFO "Default action: Accepting packet from %s to %s\n", src_ip_str, dst_ip_str);
+        return stateful_firewall_check(skb, direction);
+    case ACTION_DROP:
+        // log_message(LOG_INFO, "Default action: Dropping packet from %s to %s", src_ip_str, dst_ip_str);
+        // printk(KERN_INFO "Default action: Dropping packet from %s to %s\n", src_ip_str, dst_ip_str);
+        return NF_DROP;
+    default:
+        return stateful_firewall_check(skb, direction);
+    }
 }
 
 unsigned int rule_filter_apply_inbound(void *priv, struct sk_buff *skb, const struct nf_hook_state *state)
@@ -230,4 +247,11 @@ int rule_filter_load_rules(void)
 void change_rule_file_path(char *path)
 {
     strcpy(rule_file_path, path);
+}
+
+void switch_default_action()
+{
+    default_action = default_action == ACTION_ACCEPT ? ACTION_DROP : ACTION_ACCEPT;
+    log_message(LOG_INFO, "Default action switched to %s", default_action == ACTION_ACCEPT ? "ACCEPT" : "DROP");
+    printk(KERN_INFO "Default action switched to %s\n", default_action == ACTION_ACCEPT ? "ACCEPT" : "DROP");
 }

@@ -38,6 +38,7 @@ struct MyApp {
     rules: Vec<Rule>,
     connections: Vec<Connection>,
     last_update: Instant,
+    default_action: u8, // 添加 default_action 字段
 }
 
 #[derive(Clone, Copy)]
@@ -64,6 +65,7 @@ impl Default for MyApp {
             rules,
             connections,
             last_update: Instant::now(),
+            default_action: 0, // 初始化 default_action
         }
     }
 }
@@ -131,8 +133,14 @@ impl MyApp {
                     ui.end_row();
 
                     let mut indices_to_remove = Vec::new();
+                    let rules_len = self.rules.len(); // 计算规则长度
 
                     for (index, rule) in self.rules.iter_mut().enumerate() {
+                        // 忽略最后两条默认规则
+                        if index >= rules_len - 2 {
+                            continue;
+                        }
+
                         ui.text_edit_singleline(&mut rule.src_ip);
                         ui.text_edit_singleline(&mut rule.dst_ip);
                         ui.add(egui::DragValue::new(&mut rule.src_port));
@@ -153,7 +161,7 @@ impl MyApp {
                     }
 
                     if ui.button("Add Rule").clicked() {
-                        self.rules.push(Rule {
+                        self.rules.insert(rules_len - 2, Rule {
                             src_ip: String::new(),
                             dst_ip: String::new(),
                             src_port: 0,
@@ -167,6 +175,16 @@ impl MyApp {
                 });
         });
 
+        let default_action_text = if self.default_action == 0 {
+            "Set Default Action: Allow"
+        } else {
+            "Set Default Action: Deny"
+        };
+        if ui.button(default_action_text).clicked() {
+            // 向设备写入 'd' 以设置默认动作
+            let _ = std::fs::write(FIREWALL_PATH, "d");
+            self.default_action = 1 - self.default_action;
+        }
         if ui.button("Save Rules").clicked() {
             if let Err(err) = save_rules_to_csv(NET_RULE_PATH, &self.rules) {
                 ui.label(format!("Failed to save rules: {}", err));

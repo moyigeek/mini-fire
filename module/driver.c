@@ -112,6 +112,11 @@ static ssize_t firewall_dev_write(struct file *filep, const char *user_buffer, s
             print_connection_table();
             buffer_offset = 0;
             break;
+        case 'd':
+            printk(KERN_INFO "Received command debug\n");
+            log_message(LOG_INFO, "Received command debug");
+            switch_default_action();
+            break;
         default:
             printk(KERN_INFO "Unknown command\n");
             log_message(LOG_INFO, "Unknown command");

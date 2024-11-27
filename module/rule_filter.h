@@ -34,10 +34,12 @@ static struct nf_hook_ops firewall_out_hook = {
 };
 extern struct list_head rule_list; // Declare as extern
 
+
 void change_rule_file_path(char *path);
 int rule_filter_load_rules(void);
 unsigned int rule_filter_apply_inbound(void *priv, struct sk_buff *skb, const struct nf_hook_state *state);
 unsigned int rule_filter_apply_outbound(void *priv, struct sk_buff *skb, const struct nf_hook_state *state);
+void switch_default_action(void);
 
 // static int load_rules(void);
 #define FLOW_INBOUND 0
